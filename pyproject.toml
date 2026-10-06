@@ -1,0 +1,49 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "lint-policy"
+version = "0.1.0"
+description = "Shared pre-commit policy hooks for agentic Python repositories."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Proprietary" }
+dependencies = []
+
+[project.scripts]
+lintpolicy-comments = "lintpolicy.check_comments:main"
+lintpolicy-docstrings = "lintpolicy.check_docstrings:main"
+lintpolicy-limits = "lintpolicy.check_limits:main"
+lintpolicy-numeric = "lintpolicy.numeric.entry:main"
+lintpolicy-suppressions = "lintpolicy.check_suppressions:main"
+lintpolicy-toplevel = "lintpolicy.check_toplevel:main"
+lintpolicy-baseline = "lintpolicy.make_baseline:main"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.0",
+    "pytest>=8.3",
+    "ruff>=0.8",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lintpolicy"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "C901", "D102", "D103", "ERA"]
+ignore = ["E501"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 12
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D100", "D102", "D103"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

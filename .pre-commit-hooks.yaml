@@ -1,0 +1,47 @@
+- id: no-comments
+  name: lint policy | docstrings only, no comments
+  description: Reject explanatory hash comments in Python sources.
+  entry: lintpolicy-comments
+  language: python
+  pass_filenames: false
+  always_run: true
+
+- id: require-docstrings
+  name: lint policy | docstrings required
+  description: Require a docstring on every module, class, and function in source roots.
+  entry: lintpolicy-docstrings
+  language: python
+  pass_filenames: false
+  always_run: true
+
+- id: line-limits
+  name: lint policy | file and function line limits
+  description: Fail files at 300 lines and functions at 30 lines excluding docstrings.
+  entry: lintpolicy-limits
+  language: python
+  pass_filenames: false
+  always_run: true
+
+- id: numeric-guards
+  name: lint policy | bool-safe numeric guards
+  description: Reject raising isinstance(value, int) guards that accept bool.
+  entry: lintpolicy-numeric
+  language: python
+  pass_filenames: false
+  always_run: true
+
+- id: suppression-ratchet
+  name: lint policy | registered suppressions only
+  description: Require every noqa, type ignore, and nosec directive to be registered in the baseline.
+  entry: lintpolicy-suppressions
+  language: python
+  pass_filenames: false
+  always_run: true
+
+- id: top-level-order
+  name: lint policy | imports and globals at top
+  description: Require imports and module-level assignments at the top of the file.
+  entry: lintpolicy-toplevel
+  language: python
+  pass_filenames: false
+  always_run: true

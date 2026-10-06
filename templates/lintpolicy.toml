@@ -1,0 +1,28 @@
+# Standalone lintpolicy configuration. The same keys, without the
+# [tool.lintpolicy] prefix, can live in pyproject.toml instead.
+
+source-roots = ["src", "scripts"]
+test-roots = ["tests"]
+baseline = ".lintpolicy-baseline.json"
+
+[comments]
+roots = ["src", "scripts", "tests"]
+allow = ["noqa", "type: ignore", "pyright: ignore", "pragma: no cover", "fmt:", "ruff:", "nosec"]
+
+[docstrings]
+roots = ["src", "scripts"]
+
+[limits]
+roots = ["src", "scripts", "tests"]
+file-lines = 300
+function-lines = 30
+
+[suppressions]
+roots = ["src", "scripts", "tests"]
+require-reason = true
+
+[top-level]
+roots = ["src", "scripts", "tests"]
+
+[numeric]
+roots = ["src", "scripts"]

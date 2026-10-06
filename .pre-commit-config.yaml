@@ -1,0 +1,78 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ["--maxkb=1000"]
+      - id: check-merge-conflict
+      - id: debug-statements
+      - id: check-ast
+      - id: check-builtin-literals
+      - id: check-case-conflict
+      - id: check-json
+      - id: check-toml
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.6
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: no-comments
+        name: lint policy | docstrings only, no comments
+        entry: uv run lintpolicy-comments
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: require-docstrings
+        name: lint policy | docstrings required
+        entry: uv run lintpolicy-docstrings
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: line-limits
+        name: lint policy | file and function line limits
+        entry: uv run lintpolicy-limits
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: numeric-guards
+        name: lint policy | bool-safe numeric guards
+        entry: uv run lintpolicy-numeric
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: suppression-ratchet
+        name: lint policy | registered suppressions only
+        entry: uv run lintpolicy-suppressions
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: top-level-order
+        name: lint policy | imports and globals at top
+        entry: uv run lintpolicy-toplevel
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: local-tests
+        name: Local test suite
+        entry: uv run pytest -q
+        language: system
+        stages: [pre-push]
+        pass_filenames: false
+        always_run: true
+
+exclude: |
+  (?x)^(
+    \.git/.*|
+    \.venv/.*|
+    __pycache__/.*|
+    \.pytest_cache/.*|
+    \.ruff_cache/.*
+  )$
