@@ -15,7 +15,7 @@ def scan(config: Config) -> Scan:
     """Scan configured Python roots and return numeric guard findings."""
     findings: list[Finding] = []
     counts: dict[str, int] = {}
-    for path in iter_python_files(config.root, config.numeric_roots):
+    for path in iter_python_files(config.root, config.numeric_roots, config.numeric_exclude):
         relative = relative_path(path, config.root)
         source = path.read_text(encoding="utf-8")
         try:

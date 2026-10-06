@@ -32,7 +32,7 @@ def scan(config: Config) -> Scan:
     """Return limit findings and measurement counts."""
     findings: list[Finding] = []
     counts: dict[str, int] = {}
-    for path in iter_python_files(config.root, config.limit_roots):
+    for path in iter_python_files(config.root, config.limit_roots, config.limit_exclude):
         relative = relative_path(path, config.root)
         _measure_file(relative, path, config, findings, counts)
     return Scan(tuple(findings), counts)

@@ -74,6 +74,7 @@ debt.
 | `comments.roots` | source + test | Roots scanned by `no-comments`. |
 | `comments.allow` | `noqa`, `type: ignore`, `pyright: ignore`, `pragma: no cover`, `fmt:`, `ruff:`, `nosec` | Directive prefixes allowed as hash comments. |
 | `docstrings.roots` | source | Roots scanned by `require-docstrings`. |
+| `<tool>.exclude` | `[]` | fnmatch patterns against repo-relative paths, for example `["**/tests/**", "**/test_*.py"]` to keep tests out of the docstring check. |
 | `limits.roots` | source + test | Roots scanned by `line-limits`. |
 | `limits.file-lines` | `300` | A file fails at this many lines or more. |
 | `limits.function-lines` | `30` | A function fails at this many lines or more, excluding its docstring. |

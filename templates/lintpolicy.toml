@@ -11,6 +11,7 @@ allow = ["noqa", "type: ignore", "pyright: ignore", "pragma: no cover", "fmt:", 
 
 [docstrings]
 roots = ["src", "scripts"]
+exclude = ["**/tests/**", "**/test_*.py", "**/*_test.py"]
 
 [limits]
 roots = ["src", "scripts", "tests"]

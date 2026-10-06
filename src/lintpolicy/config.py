@@ -38,30 +38,35 @@ class Config:
     baseline_path: Path
     comment_roots: tuple[str, ...]
     comment_allow: tuple[str, ...]
+    comment_exclude: tuple[str, ...]
     docstring_roots: tuple[str, ...]
+    docstring_exclude: tuple[str, ...]
     limit_roots: tuple[str, ...]
+    limit_exclude: tuple[str, ...]
     file_line_limit: int
     function_line_limit: int
     suppression_roots: tuple[str, ...]
     suppression_require_reason: bool
+    suppression_exclude: tuple[str, ...]
     toplevel_roots: tuple[str, ...]
+    toplevel_exclude: tuple[str, ...]
     reinvention_roots: tuple[str, ...]
+    reinvention_exclude: tuple[str, ...]
     numeric_roots: tuple[str, ...]
+    numeric_exclude: tuple[str, ...]
 
 
 def load_config(start: Path | None = None) -> Config:
     """Load configuration using the repository root as the base."""
     root = (start or Path.cwd()).resolve()
-    table = _load_table(root)
+    return _assemble(root, _load_table(root))
+
+
+def _assemble(root: Path, table: dict[str, Any]) -> Config:
+    """Assemble the resolved configuration from the section tables."""
     source = _string_tuple(table, "source-roots", DEFAULT_SOURCE_ROOTS)
     tests = _string_tuple(table, "test-roots", DEFAULT_TEST_ROOTS)
-    comments = _section(table, "comments")
-    docstrings = _section(table, "docstrings")
-    limits = _section(table, "limits")
-    suppressions = _section(table, "suppressions")
-    top_level = _section(table, "top-level")
-    reinvention = _section(table, "reinvention")
-    numeric = _section(table, "numeric")
+    comments, docstrings, limits, suppressions, top_level, reinvention, numeric = _seven_sections(table)
     return Config(
         root=root,
         source_roots=source,
@@ -69,16 +74,29 @@ def load_config(start: Path | None = None) -> Config:
         baseline_path=root / _string(table, "baseline", DEFAULT_BASELINE_NAME),
         comment_roots=tuple(_roots(comments, source + tests)),
         comment_allow=_string_tuple(comments, "allow", DEFAULT_ALLOWED_DIRECTIVES),
+        comment_exclude=_string_tuple(comments, "exclude", ()),
         docstring_roots=tuple(_roots(docstrings, source)),
+        docstring_exclude=_string_tuple(docstrings, "exclude", ()),
         limit_roots=tuple(_roots(limits, source + tests)),
+        limit_exclude=_string_tuple(limits, "exclude", ()),
         file_line_limit=_int(limits, "file-lines", DEFAULT_FILE_LINES),
         function_line_limit=_int(limits, "function-lines", DEFAULT_FUNCTION_LINES),
         suppression_roots=tuple(_roots(suppressions, source + tests)),
         suppression_require_reason=_bool(suppressions, "require-reason", True),
+        suppression_exclude=_string_tuple(suppressions, "exclude", ()),
         toplevel_roots=tuple(_roots(top_level, source + tests)),
+        toplevel_exclude=_string_tuple(top_level, "exclude", ()),
         reinvention_roots=tuple(_roots(reinvention, source + tests)),
+        reinvention_exclude=_string_tuple(reinvention, "exclude", ()),
         numeric_roots=tuple(_roots(numeric, source)),
+        numeric_exclude=_string_tuple(numeric, "exclude", ()),
     )
+
+
+def _seven_sections(table: dict[str, Any]) -> tuple[dict[str, Any], ...]:
+    """Return the nested section tables in constructor order."""
+    names = ("comments", "docstrings", "limits", "suppressions", "top-level", "reinvention", "numeric")
+    return tuple(_section(table, name) for name in names)
 
 
 def _load_table(root: Path) -> dict[str, Any]:

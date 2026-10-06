@@ -27,7 +27,7 @@ def scan(config: Config) -> Scan:
     """Return comment findings and per-file counts."""
     findings: list[Finding] = []
     counts: dict[str, int] = {}
-    for path in iter_python_files(config.root, config.comment_roots):
+    for path in iter_python_files(config.root, config.comment_roots, config.comment_exclude):
         relative = relative_path(path, config.root)
         file_findings = check_file(relative, path, config.comment_allow)
         if not file_findings:

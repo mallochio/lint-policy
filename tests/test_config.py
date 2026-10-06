@@ -41,3 +41,10 @@ def test_pyproject_table_wins_over_standalone(tmp_path: Path) -> None:
     write_config(tmp_path, 'source-roots = ["pkg"]\n')
     config = load_config(tmp_path)
     assert config.source_roots == ("app",)
+
+
+def test_section_excludes_are_loaded(tmp_path: Path) -> None:
+    write_config(tmp_path, '[docstrings]\nexclude = ["**/tests/**"]\n')
+    config = load_config(tmp_path)
+    assert config.docstring_exclude == ("**/tests/**",)
+    assert config.comment_exclude == ()

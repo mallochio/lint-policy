@@ -30,7 +30,7 @@ def scan(config: Config) -> SuppressionScan:
     """Collect suppression directives from the configured roots."""
     entries: dict[str, str | None] = {}
     locations: dict[str, tuple[str, int]] = {}
-    for path in iter_python_files(config.root, config.suppression_roots):
+    for path in iter_python_files(config.root, config.suppression_roots, config.suppression_exclude):
         relative = relative_path(path, config.root)
         _collect_file(relative, path, config.comment_allow, entries, locations)
     return SuppressionScan(entries, locations)

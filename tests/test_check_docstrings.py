@@ -6,7 +6,7 @@ from pathlib import Path
 
 from lintpolicy.check_docstrings import scan
 from lintpolicy.config import load_config
-from support import write_python
+from support import write_config, write_python
 
 
 def test_missing_module_class_and_function_are_reported(tmp_path: Path) -> None:
@@ -55,3 +55,10 @@ def test_nested_functions_are_qualified(tmp_path: Path) -> None:
     write_python(tmp_path, "src/a.py", source)
     result = scan(load_config(tmp_path))
     assert result.findings[0].message == "missing function docstring: outer.inner"
+
+
+def test_exclude_pattern_skips_nested_tests(tmp_path: Path) -> None:
+    write_python(tmp_path, "src/pkg/tests/test_a.py", "def test_value():\n    assert 1 == 1\n")
+    write_config(tmp_path, '[docstrings]\nexclude = ["**/tests/**"]\n')
+    result = scan(load_config(tmp_path))
+    assert result.findings == ()
