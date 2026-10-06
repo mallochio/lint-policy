@@ -62,7 +62,7 @@ only the changed files, because the baseline checks are global.
 5. Add the policy block to `AGENTS.md`, from `docs/AGENTS-snippet.md`.
 
 See `docs/rollout.md` for the migration plan for repositories with existing
-debt.
+debt and for CI access to the private hook repo.
 
 ## Configuration reference
 

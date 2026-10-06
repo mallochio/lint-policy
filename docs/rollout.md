@@ -6,8 +6,20 @@ all work on day one.
 ## 1. Prepare the policy repo
 
 Tag a release in `mallochio/lint-policy` and pin that tag as `rev` in every
-target repository. Private repositories need credentials in CI for
-pre-commit to clone the hook repo.
+target repository.
+
+### CI access to a private hook repo
+
+The default GitHub Actions token can read only its own repository, so a
+private hook repo fails to clone in CI. Pick one:
+
+- Make `mallochio/lint-policy` public.
+- Add a fine-grained token secret that can read the hook repo, and rewrite
+  git URLs before the pre-commit step:
+
+  ```yaml
+  - run: git config --global url."https://x-access-token:${{ secrets.LINT_POLICY_TOKEN }}@github.com/mallochio/".insteadOf "https://github.com/mallochio/"
+  ```
 
 ## 2. Configure the target repository
 
