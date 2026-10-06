@@ -53,3 +53,7 @@ source = ["src"]
 show_missing = true
 skip_covered = true
 fail_under = 85
+
+[tool.docvet]
+exclude = ["tests", "scripts"]
+fail-on = ["freshness"]

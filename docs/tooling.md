@@ -12,13 +12,11 @@ whenever it implements a rule exactly.
 | Ruff `PTH`, `SIM`, `C4`, `PERF`, `DTZ`, `PIE` | Hand-rolled paths, control flow, comprehensions, loops, datetimes | Mostly enabled in the target repos already. Contained in `templates/pyproject-fragment.toml`. |
 | Ruff `E402`, `PLC0415` | Imports after code, imports inside functions | `E402` is already active in most repos; `PLC0415` is the pylint equivalent. Our `top-level-order` hook adds the globals rule and the baseline. |
 | Ruff `RUF100`, `PGH003`, `PGH004` | Unused `noqa`, blanket `type: ignore`, blanket `noqa` | Supersedes the `flake8-noqa` plugin without adding flake8. |
-| `ondivi` | Changed-lines baseline for any linter (Ruff, flake8, pylint, mypy) | Phase in the Ruff families above in repos with existing debt without a `noqa` dump. Text-output filtering, so it works with any tool. |
+| `ondivi` | Changed-lines baseline for any linter (Ruff, flake8, pylint, mypy) | Phase in the Ruff families above in repos with existing debt without a `noqa` dump. Pin `ondivi==0.7.3`. Uses `git diff` against the merge base, so violations within the diff context window of a change are also flagged. |
+| `docvet` | Stale docstrings (freshness), plus presence and enrichment reporting | Gate `freshness` only. It reported zero findings across all four repos, so the gate costs nothing today. Enrichment findings are far too many to gate (534 on cerberus); they stay warnings. Pin `v1.16.0`. |
 
 ## Optional
 
-- `docvet` — docstring presence, completeness, and staleness via git blame.
-  Adds one capability our `require-docstrings` hook does not have: detecting a
-  docstring that no longer matches the code.
 - `refurb` — the standalone tool behind Ruff's `FURB`. Runs on mypy's engine
   and catches patterns Ruff has not ported. Add only if Ruff leaves gaps.
 - `lizard` — polyglot function length, cyclomatic complexity, and clone

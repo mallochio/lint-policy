@@ -1,0 +1,4 @@
+- repo: https://github.com/Alberto-Codes/docvet
+    rev: v1.16.0
+    hooks:
+      - id: docvet
