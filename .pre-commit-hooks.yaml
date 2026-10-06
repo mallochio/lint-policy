@@ -45,3 +45,11 @@
   language: python
   pass_filenames: false
   always_run: true
+
+- id: reinvention-guard
+  name: lint policy | no hand-rolled idioms
+  description: Flag hand-rolled counters, defaultdicts, dict copies, mktemp, means, and retries.
+  entry: lintpolicy-reinvention
+  language: python
+  pass_filenames: false
+  always_run: true

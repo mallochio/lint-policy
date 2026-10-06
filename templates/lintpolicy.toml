@@ -24,5 +24,8 @@ require-reason = true
 [top-level]
 roots = ["src", "scripts", "tests"]
 
+[reinvention]
+roots = ["src", "scripts", "tests"]
+
 [numeric]
 roots = ["src", "scripts"]

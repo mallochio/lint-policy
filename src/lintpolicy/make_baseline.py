@@ -7,7 +7,14 @@ import json
 import sys
 from collections.abc import Sequence
 
-from lintpolicy import check_comments, check_docstrings, check_limits, check_suppressions, check_toplevel
+from lintpolicy import (
+    check_comments,
+    check_docstrings,
+    check_limits,
+    check_reinvention,
+    check_suppressions,
+    check_toplevel,
+)
 from lintpolicy.baseline import BASELINE_VERSION, save
 from lintpolicy.config import Config, load_config
 from lintpolicy.numeric import scan as scan_numeric
@@ -23,6 +30,7 @@ def collect(config: Config) -> dict:
         "numeric": scan_numeric(config).counts,
         "suppressions": check_suppressions.scan(config).entries,
         "top_level": check_toplevel.scan(config).counts,
+        "reinvention": check_reinvention.scan(config).counts,
     }
 
 

@@ -45,6 +45,7 @@ class Config:
     suppression_roots: tuple[str, ...]
     suppression_require_reason: bool
     toplevel_roots: tuple[str, ...]
+    reinvention_roots: tuple[str, ...]
     numeric_roots: tuple[str, ...]
 
 
@@ -59,6 +60,7 @@ def load_config(start: Path | None = None) -> Config:
     limits = _section(table, "limits")
     suppressions = _section(table, "suppressions")
     top_level = _section(table, "top-level")
+    reinvention = _section(table, "reinvention")
     numeric = _section(table, "numeric")
     return Config(
         root=root,
@@ -74,6 +76,7 @@ def load_config(start: Path | None = None) -> Config:
         suppression_roots=tuple(_roots(suppressions, source + tests)),
         suppression_require_reason=_bool(suppressions, "require-reason", True),
         toplevel_roots=tuple(_roots(top_level, source + tests)),
+        reinvention_roots=tuple(_roots(reinvention, source + tests)),
         numeric_roots=tuple(_roots(numeric, source)),
     )
 

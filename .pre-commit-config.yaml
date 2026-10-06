@@ -60,6 +60,12 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+      - id: reinvention-guard
+        name: lint policy | no hand-rolled idioms
+        entry: uv run lintpolicy-reinvention
+        language: system
+        pass_filenames: false
+        always_run: true
       - id: local-tests
         name: Local test suite
         entry: uv run pytest -q

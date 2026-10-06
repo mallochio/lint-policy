@@ -45,9 +45,11 @@ Recommended wave order:
 2. Delete explanatory comments and fold their content into docstrings.
 3. Add docstrings, largest gaps first.
 4. Move imports and module-level assignments to the top of each file.
-5. Split files at 300 lines and functions at 30 lines, guided by `line-limits`
+5. Replace hand-rolled idioms flagged by `reinvention-guard` with the named
+   library.
+6. Split files at 300 lines and functions at 30 lines, guided by `line-limits`
    output.
-6. Register or remove the remaining suppressions.
+7. Register or remove the remaining suppressions.
 
 ## 5. Tighten
 

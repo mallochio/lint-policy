@@ -15,6 +15,7 @@ baseline.
 | `numeric-guards` | A raising `isinstance(value, int)` guard must also exclude `bool`. |
 | `suppression-ratchet` | Every `noqa`, `type: ignore`, `pyright: ignore`, and `nosec` directive carries ` - reason: ...` and a baseline entry. |
 | `top-level-order` | Imports and module-level assignments belong at the top of the file. |
+| `reinvention-guard` | Hand-rolled counter, defaultdict, dict copy, `mktemp`, mean, and retry shapes are rejected with the replacement named. |
 
 All hooks run repository-wide on every commit and push. None of them inspect
 only the changed files, because the baseline checks are global.
@@ -25,7 +26,7 @@ only the changed files, because the baseline checks are global.
 
    ```yaml
      - repo: https://github.com/mallochio/lint-policy
-       rev: v0.1.0
+       rev: v0.2.0
        hooks:
          - id: no-comments
          - id: require-docstrings
@@ -33,6 +34,7 @@ only the changed files, because the baseline checks are global.
          - id: numeric-guards
          - id: suppression-ratchet
          - id: top-level-order
+         - id: reinvention-guard
    ```
 
 2. Configure roots when they are not `src`, `scripts`, and `tests`. Put the
@@ -78,6 +80,7 @@ debt.
 | `suppressions.roots` | source + test | Roots scanned by `suppression-ratchet`. |
 | `suppressions.require-reason` | `true` | A new directive without ` - reason: ...` fails. |
 | `top-level.roots` | source + test | Roots scanned by `top-level-order`. |
+| `reinvention.roots` | source + test | Roots scanned by `reinvention-guard`. |
 | `numeric.roots` | source | Roots scanned by `numeric-guards`. |
 
 Every section accepts a `roots` key that replaces the default. Examples live
@@ -119,6 +122,23 @@ outside that region, or any import inside a function or class, fails.
 A module-level assignment after the first class or function definition
 fails. Assignments inside a `__main__` guard are exempt, because that block
 is the program entry point.
+
+## Reinvention rules
+
+`reinvention-guard` flags shapes that agents rewrite by hand and names the
+library replacement:
+
+- `d[k] = d.get(k, 0) + 1` -> `collections.Counter`
+- `if k not in d: d[k] = []` -> `collections.defaultdict` or `dict.setdefault`
+- `for k, v in src.items(): dst[k] = v` -> `dst.update(src)`
+- `tempfile.mktemp` -> `NamedTemporaryFile`, `TemporaryDirectory`, or `mkstemp`
+- `sum(values) / len(values)` -> `statistics.fmean`
+- `time.sleep` inside an `except` in a loop -> `tenacity`, `backoff`, or the repo helper
+
+Algorithm-level duplication of a library cannot be detected syntactically.
+Cover that case with the `AGENTS.md` rule and review. The Ruff families
+`FURB`, `PTH`, `SIM`, `C4`, `PERF`, `DTZ`, and `PIE` catch many further
+reinvented idioms; see `templates/pyproject-fragment.toml`.
 
 ## Companion checks
 
