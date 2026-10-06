@@ -13,5 +13,11 @@ fi
 report="$(mktemp)"
 trap 'rm -f "$report"' EXIT
 
-uv run ruff check . --output-format=concise > "$report" || true
+status=0
+uv run ruff check . --output-format=concise > "$report" || status=$?
+if [ "$status" -gt 1 ]; then
+  echo "[ruff-new] ruff failed to run (exit $status); refusing to treat the report as clean."
+  exit "$status"
+fi
+
 uvx --from ondivi==0.7.3 ondivi --fromfile "$report" --baseline "$base"

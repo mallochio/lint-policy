@@ -13,7 +13,7 @@ whenever it implements a rule exactly.
 | Ruff `E402`, `PLC0415` | Imports after code, imports inside functions | `E402` is already active in most repos; `PLC0415` is the pylint equivalent. Our `top-level-order` hook adds the globals rule and the baseline. |
 | Ruff `RUF100`, `PGH003`, `PGH004` | Unused `noqa`, blanket `type: ignore`, blanket `noqa` | Supersedes the `flake8-noqa` plugin without adding flake8. |
 | `ondivi` | Changed-lines baseline for any linter (Ruff, flake8, pylint, mypy) | Phase in the Ruff families above in repos with existing debt without a `noqa` dump. Pin `ondivi==0.7.3`. Uses `git diff` against the merge base, so violations within the diff context window of a change are also flagged. |
-| `docvet` | Stale docstrings (freshness), plus presence and enrichment reporting | Gate `freshness` only. It reported zero findings across all four repos, so the gate costs nothing today. Enrichment findings are far too many to gate (534 on cerberus); they stay warnings. Pin `v1.16.0`. |
+| `docvet` | Stale docstrings (freshness), plus presence and enrichment reporting | Gate `freshness` only, and run the hook with `args: ["--staged"]` plus `pass_filenames: false`. Diff mode inspects the git diff; with file arguments it reads an empty unstaged diff and passes vacuously. It reported zero findings across all four repos. Enrichment findings are far too many to gate (534 on cerberus); they stay warnings. Pin `v1.16.0`. |
 
 ## Optional
 

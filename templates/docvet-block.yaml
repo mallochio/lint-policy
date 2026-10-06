@@ -2,3 +2,5 @@
     rev: v1.16.0
     hooks:
       - id: docvet
+        args: ["--staged"]
+        pass_filenames: false
