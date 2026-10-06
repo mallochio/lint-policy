@@ -149,6 +149,7 @@ reinvented idioms; see `templates/pyproject-fragment.toml`.
 - `pyproject-fragment.toml`: ruff, complexipy, pytest, and coverage settings.
 - `ci-parity.sh`: scoped pre-commit script for the pre-push stage.
 - `AGENTS-snippet.md`: the policy block to paste into `AGENTS.md`.
+- `docs/tooling.md`: survey of off-the-shelf tools and what to adopt.
 
 ## Development
 
