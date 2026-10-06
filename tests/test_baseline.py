@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from lintpolicy.baseline import Baseline, save, verify_counts
+from lintpolicy.baseline import Baseline, over_budget_keys, save, verify_counts
 
 
 def test_new_finding_fails() -> None:
@@ -31,3 +31,10 @@ def test_round_trip(tmp_path: Path) -> None:
     assert loaded.section("comments") == {"a.py": 1}
     assert loaded.section("missing") == {}
     assert Baseline.load(tmp_path / "absent.json").section("comments") == {}
+
+
+def test_over_budget_keys_flags_missing_and_grown() -> None:
+    assert over_budget_keys({"a.py": 2}, {"a.py": 1}) == {"a.py"}
+    assert over_budget_keys({"a.py": 1}, {}) == {"a.py"}
+    assert over_budget_keys({"a.py": 1}, {"a.py": 1}) == set()
+    assert over_budget_keys({}, {"a.py": 1}) == set()

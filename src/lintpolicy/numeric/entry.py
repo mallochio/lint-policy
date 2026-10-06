@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import ast
 
-from lintpolicy.baseline import Baseline, verify_counts
+from lintpolicy.baseline import Baseline, over_budget_keys, verify_counts
 from lintpolicy.config import Config, load_config
 from lintpolicy.discovery import iter_python_files, relative_path
 from lintpolicy.numeric.analysis import scan_tree
@@ -35,4 +35,6 @@ def main() -> int:
     result = scan(config)
     budgets = Baseline.load(config.baseline_path).section("numeric")
     over, stale = verify_counts("numeric", result.counts, budgets)
-    return report("numeric", result.findings, [*over, *stale])
+    unbudgeted = over_budget_keys(result.counts, budgets)
+    findings = [finding for finding in result.findings if finding.path in unbudgeted]
+    return report("numeric", findings, [*over, *stale])

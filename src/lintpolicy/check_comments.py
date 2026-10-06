@@ -14,7 +14,7 @@ from collections.abc import Sequence
 from io import BytesIO
 from pathlib import Path
 
-from lintpolicy.baseline import Baseline, verify_counts
+from lintpolicy.baseline import Baseline, over_budget_keys, verify_counts
 from lintpolicy.config import Config, load_config
 from lintpolicy.directives import extract_directive, starts_with_directive
 from lintpolicy.discovery import iter_python_files, relative_path
@@ -119,4 +119,6 @@ def main() -> int:
     result = scan(config)
     budgets = Baseline.load(config.baseline_path).section("comments")
     over, stale = verify_counts("comments", result.counts, budgets)
-    return report("comments", result.findings, [*over, *stale])
+    unbudgeted = over_budget_keys(result.counts, budgets)
+    findings = [finding for finding in result.findings if finding.path in unbudgeted]
+    return report("comments", findings, [*over, *stale])

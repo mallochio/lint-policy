@@ -40,14 +40,19 @@ def save(path: Path, data: dict) -> None:
     path.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def over_budget_keys(actual: Mapping[str, int], budgets: Mapping[str, int]) -> set[str]:
+    """Return keys that exceed their baseline budget or have no entry."""
+    return {key for key, value in actual.items() if value > budgets.get(key, 0)}
+
+
 def verify_counts(tool: str, actual: Mapping[str, int], budgets: Mapping[str, int]) -> tuple[list[str], list[str]]:
     """Return over-budget and stale messages for one count-based tool."""
     over: list[str] = []
-    for key, current in sorted(actual.items()):
+    for key in sorted(over_budget_keys(actual, budgets)):
         budget = budgets.get(key)
         if budget is None:
             over.append(f"{tool}: new finding in {key}; fix it or register it in the baseline")
-        elif current > budget:
-            over.append(f"{tool}: {key} grew to {current}, baseline allows {budget}")
+        else:
+            over.append(f"{tool}: {key} grew to {actual[key]}, baseline allows {budget}")
     stale = [f"{tool}: baseline entry is stale, remove it: {key}" for key in sorted(budgets) if actual.get(key, 0) == 0]
     return over, stale

@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from lintpolicy.check_docstrings import scan
+from lintpolicy.check_docstrings import main, scan
 from lintpolicy.config import load_config
-from support import write_config, write_python
+from support import write_baseline, write_config, write_python
 
 
 def test_missing_module_class_and_function_are_reported(tmp_path: Path) -> None:
@@ -62,3 +62,17 @@ def test_exclude_pattern_skips_nested_tests(tmp_path: Path) -> None:
     write_config(tmp_path, '[docstrings]\nexclude = ["**/tests/**"]\n')
     result = scan(load_config(tmp_path))
     assert result.findings == ()
+
+
+def test_baseline_covered_findings_pass_main(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    write_python(tmp_path, "src/a.py", "class Engine:\n    def run(self):\n        return 1\n")
+    write_baseline(tmp_path, "docstrings", {"src/a.py": 3})
+    assert main() == 0
+
+
+def test_findings_past_the_baseline_fail_main(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    write_python(tmp_path, "src/a.py", "class Engine:\n    def run(self):\n        return 1\n")
+    write_baseline(tmp_path, "docstrings", {"src/a.py": 2})
+    assert main() == 1

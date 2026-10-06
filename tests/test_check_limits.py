@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from lintpolicy.check_limits import scan
+from lintpolicy.check_limits import main, scan
 from lintpolicy.config import load_config
-from support import write_python
+from support import write_baseline, write_python
 
 
 def _function_source(code_lines: int, docstring_lines: int) -> str:
@@ -61,3 +61,10 @@ def test_tests_root_is_scanned(tmp_path: Path) -> None:
     write_python(tmp_path, "tests/test_a.py", _function_source(code_lines=29, docstring_lines=0))
     result = scan(load_config(tmp_path))
     assert result.counts == {"function:tests/test_a.py:run": 30}
+
+
+def test_baseline_covered_function_limit_passes_main(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    write_python(tmp_path, "src/a.py", _function_source(code_lines=29, docstring_lines=0))
+    write_baseline(tmp_path, "limits", {"function:src/a.py:run": 30})
+    assert main() == 0
