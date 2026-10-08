@@ -14,6 +14,7 @@ whenever it implements a rule exactly.
 | Ruff `RUF100`, `PGH003`, `PGH004` | Unused `noqa`, blanket `type: ignore`, blanket `noqa` | Supersedes the `flake8-noqa` plugin without adding flake8. |
 | `ondivi` | Changed-lines baseline for any linter (Ruff, flake8, pylint, mypy) | Phase in the Ruff families above in repos with existing debt without a `noqa` dump. Pin `ondivi==0.7.3`. Uses `git diff` against the merge base, so violations within the diff context window of a change are also flagged. |
 | `docvet` | Stale docstrings (freshness), plus presence and enrichment reporting | Gate `freshness` only, and run the hook with `args: ["--staged"]` plus `pass_filenames: false`. Diff mode inspects the git diff; with file arguments it reads an empty unstaged diff and passes vacuously. It reported zero findings across all four repos. Enrichment findings are far too many to gate (534 on cerberus); they stay warnings. Pin `v1.16.0`. |
+| `complexipy` | Python cognitive complexity (nesting-aware) | Complements Ruff `C901` / `PLR0912` (cyclomatic / branch density). Config lives in `templates/pyproject-fragment.toml` (`max-complexity-allowed = 20`). Official pre-commit hook (`complexipy-pre-commit`), PyPI wheels, snapshots, and a Python API. Already wired in mantis and the thermo-nuclear cleanup standard. |
 
 ## Optional
 
@@ -21,7 +22,13 @@ whenever it implements a rule exactly.
   and catches patterns Ruff has not ported. Add only if Ruff leaves gaps.
 - `lizard` — polyglot function length, cyclomatic complexity, and clone
   detection. Useful for the TypeScript app in SignalFoundry; Python limits
-  stay with `line-limits`.
+  stay with `line-limits`. For polyglot cognitive + cyclomatic gates, prefer
+  evaluating `cccc` (below) over lizard's cyclomatic-only heuristic.
+- `cccc` — Rust CLI for cognitive and cyclomatic complexity across many
+  languages (Python via tree-sitter, plus TS/JS, Go, Rust, and others). Strong
+  for mixed-language trees and CI caching (`cccc-action`). Keep as a
+  polyglot/TS option; do not replace `complexipy` for Python-only policy
+  (see skipped note).
 - `flake8-max-function-length` — exact function-length rule that excludes
   docstrings by default. Use it instead of our function limit only if a plugin
   is preferred over our hook; it has no file length and no baseline.
@@ -46,6 +53,16 @@ whenever it implements a rule exactly.
   machinery than the current hooks justify.
 - Full pylint — overlaps Ruff. Only `duplicate-code` (R0801) and
   `too-many-lines` (C0302) are unique; `prylint` or `lizard` can cover both.
+- `cccc` as a `complexipy` replacement — skipped for this Python policy.
+  `complexipy` already matches the stack: `pyproject.toml` config, official
+  pre-commit hook, PyPI install, snapshot grandfathering, and the ≤20 house
+  standard used by mantis and repo-cleanup-crew. `cccc` is younger, installs
+  as a cargo/binary (no first-party pre-commit repo), uses `cccc.toml` instead
+  of `[tool.complexipy]`, and scores Python differently (for example `else` is
+  +1 flat vs complexipy's +0). Switching would retune thresholds and break
+  existing snapshots without gaining much in Python-only repos. Revisit `cccc`
+  only when a target repo needs one cognitive gate across Python and
+  TypeScript.
 
 ## Custom rules that stay ours
 
