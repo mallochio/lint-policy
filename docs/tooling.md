@@ -54,15 +54,17 @@ whenever it implements a rule exactly.
 - Full pylint — overlaps Ruff. Only `duplicate-code` (R0801) and
   `too-many-lines` (C0302) are unique; `prylint` or `lizard` can cover both.
 - `cccc` as a `complexipy` replacement — skipped for this Python policy.
-  `complexipy` already matches the stack: `pyproject.toml` config, official
-  pre-commit hook, PyPI install, snapshot grandfathering, and the ≤20 house
-  standard used by mantis and repo-cleanup-crew. `cccc` is younger, installs
-  as a cargo/binary (no first-party pre-commit repo), uses `cccc.toml` instead
-  of `[tool.complexipy]`, and scores Python differently (for example `else` is
-  +1 flat vs complexipy's +0). Switching would retune thresholds and break
-  existing snapshots without gaining much in Python-only repos. Revisit `cccc`
-  only when a target repo needs one cognitive gate across Python and
-  TypeScript.
+  Side-by-side on Sonar-style fixtures (nested `if`, `elif`/`else`,
+  `match`, logical runs, `sum_of_primes`) both tools report the same
+  cognitive scores. The only Python deltas found were multi-site recursion
+  and comprehension nesting (cccc stricter by 1). That is not a meaningful
+  cognitive-complexity win for Python-only repos. `complexipy` already
+  matches the stack: `pyproject.toml` config, official pre-commit hook,
+  PyPI install, snapshot grandfathering, and the ≤20 house standard used by
+  mantis and repo-cleanup-crew. `cccc` is younger, installs as a
+  cargo/binary (no first-party pre-commit repo), and uses `cccc.toml`.
+  Revisit `cccc` when a target repo needs one cognitive gate across Python
+  and TypeScript, not for a better Python cognitive metric.
 
 ## Custom rules that stay ours
 
