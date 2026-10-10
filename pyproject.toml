@@ -36,14 +36,16 @@ line-length = 120
 target-version = "py312"
 
 [tool.ruff.lint]
-select = ["E", "F", "C901", "D102", "D103", "ERA"]
-ignore = ["E501"]
+select = ["E", "F", "C901", "D", "ERA"]
+ignore = ["D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107", "E501"]
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
 [tool.ruff.lint.mccabe]
 max-complexity = 12
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["D100", "D102", "D103"]
+"tests/**" = ["D"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

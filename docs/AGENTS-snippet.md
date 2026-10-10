@@ -9,7 +9,7 @@ Paste this block into a target repository's `AGENTS.md`.
 - No `#` comments in Python. Docstrings only. Allowed hash comments are a
   shebang, a PEP 263 encoding cookie, and registered tool directives.
 - Every module, class, and function in the source roots needs a docstring.
-  Tests are exempt from docstrings.
+  Docstrings follow Google style. Tests are exempt from docstrings.
 - Files stay below 300 lines. Functions stay below 30 lines excluding their
   docstrings. Decorators do not count.
 - Imports and module-level assignments belong at the top of the file. No

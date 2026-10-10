@@ -147,7 +147,7 @@ reinvented idioms; see `templates/pyproject-fragment.toml`.
 
 - `pre-commit-block.yaml`: the hook block to paste.
 - `lintpolicy.toml`: annotated configuration example.
-- `pyproject-fragment.toml`: ruff, complexipy, pytest, and coverage settings.
+- `pyproject-fragment.toml`: ruff with Google-style docstring rules, complexipy, pytest, and coverage settings. Docstring presence stays with the `require-docstrings` hook; ruff covers the style of the docstrings that exist.
 - `ci-parity.sh`: scoped pre-commit script for the pre-push stage.
 - `ruff_new_code.sh`: changed-line Ruff gate using ondivi.
 - `docvet-block.yaml`: docstring freshness hook block.

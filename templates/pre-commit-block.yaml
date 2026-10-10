@@ -1,10 +1,10 @@
 - repo: https://github.com/mallochio/lint-policy
-    rev: v0.4.1
-    hooks:
-      - id: no-comments
-      - id: require-docstrings
-      - id: line-limits
-      - id: numeric-guards
-      - id: suppression-ratchet
-      - id: top-level-order
-      - id: reinvention-guard
+  rev: v0.4.2
+  hooks:
+    - id: no-comments
+    - id: require-docstrings
+    - id: line-limits
+    - id: numeric-guards
+    - id: suppression-ratchet
+    - id: top-level-order
+    - id: reinvention-guard

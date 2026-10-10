@@ -12,6 +12,7 @@ select = [
     "UP",
     "B",
     "C4",
+    "D",
     "SIM",
     "RET",
     "ARG",
@@ -27,13 +28,16 @@ select = [
     "RUF",
     "PGH",
 ]
-ignore = ["E501", "PLR0913"]
+ignore = ["E501", "PLR0913", "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
 
 [tool.ruff.lint.mccabe]
 max-complexity = 12
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["ARG001"]
+"tests/**" = ["ARG001", "D"]
 
 [tool.complexipy]
 paths = ["src"]
