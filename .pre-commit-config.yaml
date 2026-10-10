@@ -66,6 +66,18 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+      - id: cognitive-complexity
+        name: design | cognitive complexity per function
+        entry: uv run complexipy
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: import-layers
+        name: design | import layers hold
+        entry: uv run lint-imports
+        language: system
+        pass_filenames: false
+        always_run: true
       - id: local-tests
         name: Local test suite
         entry: uv run pytest -q

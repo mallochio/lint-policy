@@ -48,20 +48,24 @@ def _counter_lookup(value: ast.expr) -> tuple[str, str] | None:
     """Return the owner and key of a ``d.get(key, 0) + 1`` expression."""
     if not isinstance(value, ast.BinOp) or not isinstance(value.op, ast.Add):
         return None
-    pairs = ((value.left, value.right), (value.right, value.left))
-    for candidate, constant in pairs:
-        if not (isinstance(constant, ast.Constant) and constant.value == 1):
-            continue
-        if not isinstance(candidate, ast.Call):
-            continue
-        func = candidate.func
-        if not isinstance(func, ast.Attribute) or func.attr != "get":
-            continue
-        if len(candidate.args) != 2 or candidate.keywords:
-            continue
-        default = candidate.args[1]
-        if isinstance(default, ast.Constant) and default.value == 0:
-            return ast.unparse(func.value), ast.unparse(candidate.args[0])
+    for candidate, constant in ((value.left, value.right), (value.right, value.left)):
+        if isinstance(constant, ast.Constant) and constant.value == 1:
+            found = _zero_default_get(candidate)
+            if found is not None:
+                return found
+    return None
+
+
+def _zero_default_get(candidate: ast.expr) -> tuple[str, str] | None:
+    """Return the owner and key of a ``d.get(key, 0)`` call, or None."""
+    if not isinstance(candidate, ast.Call) or candidate.keywords or len(candidate.args) != 2:
+        return None
+    func = candidate.func
+    if not isinstance(func, ast.Attribute) or func.attr != "get":
+        return None
+    default = candidate.args[1]
+    if isinstance(default, ast.Constant) and default.value == 0:
+        return ast.unparse(func.value), ast.unparse(candidate.args[0])
     return None
 
 

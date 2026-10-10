@@ -26,7 +26,7 @@ only the changed files, because the baseline checks are global.
 
    ```yaml
      - repo: https://github.com/mallochio/lint-policy
-       rev: v0.4.2
+       rev: v0.4.3
        hooks:
          - id: no-comments
          - id: require-docstrings
@@ -151,6 +151,8 @@ reinvented idioms; see `templates/pyproject-fragment.toml`.
 - `ci-parity.sh`: scoped pre-commit script for the pre-push stage.
 - `ruff_new_code.sh`: changed-line Ruff gate using ondivi.
 - `docvet-block.yaml`: docstring freshness hook block.
+- `design-gates-block.yaml`: `complexipy` and `import-linter` hook block.
+- `importlinter-fragment.toml`: example layer and independence contracts.
 - `AGENTS-snippet.md`: the policy block to paste into `AGENTS.md`.
 - `docs/tooling.md`: survey of off-the-shelf tools and what to adopt.
 

@@ -18,6 +18,9 @@ Follow the policy here before you change any hook.
 - Every module, class, and function in `src/` needs a docstring.
 - Files stay below 300 lines. Functions stay below 30 lines excluding their
   docstrings. Decorators do not count.
+- Cognitive complexity stays at 15 or less per function, functions take five
+  parameters or fewer, and imports follow the `import-linter` layers in
+  `pyproject.toml`. Update the contract when you add a module.
 - Do not add suppression directives. Fix the code or the check instead.
 - Keep test functions small and test files short. Tests are exempt from
   docstrings, not from the comment ban or the line limits.

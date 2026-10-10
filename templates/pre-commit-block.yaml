@@ -1,5 +1,5 @@
 - repo: https://github.com/mallochio/lint-policy
-  rev: v0.4.2
+  rev: v0.4.3
   hooks:
     - id: no-comments
     - id: require-docstrings

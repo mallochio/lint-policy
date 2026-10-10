@@ -14,6 +14,30 @@ whenever it implements a rule exactly.
 | Ruff `RUF100`, `PGH003`, `PGH004` | Unused `noqa`, blanket `type: ignore`, blanket `noqa` | Supersedes the `flake8-noqa` plugin without adding flake8. |
 | `ondivi` | Changed-lines baseline for any linter (Ruff, flake8, pylint, mypy) | Phase in the Ruff families above in repos with existing debt without a `noqa` dump. Pin `ondivi==0.7.3`. Uses `git diff` against the merge base, so violations within the diff context window of a change are also flagged. |
 | `docvet` | Stale docstrings (freshness), plus presence and enrichment reporting | Gate `freshness` only, and run the hook with `args: ["--staged"]` plus `pass_filenames: false`. Diff mode inspects the git diff; with file arguments it reads an empty unstaged diff and passes vacuously. It reported zero findings across all four repos. Enrichment findings are far too many to gate (534 on cerberus); they stay warnings. Pin `v1.16.0`. |
+| `complexipy` | Cognitive complexity per function | Limit 15. Nesting raises the score, so it catches deep code that cyclomatic complexity rates as simple. Runs as the `cognitive-complexity` hook from `templates/design-gates-block.yaml`. |
+| `import-linter` | Layer order, forbidden imports, import cycles, independent packages | Needs a contract per repository; see `templates/importlinter-fragment.toml`. Runs as the `import-layers` hook. This repo enforces its own contract in `pyproject.toml`. |
+| Ruff `PLR0913`, `SLF001` | Parameter count over 5, access to private members | `PLR0913` is the only parameter limit in the stack. `SLF001` stops code from reaching into another module's internals, which `import-linter` cannot see. Tests are exempt from `SLF001`. |
+
+## Overlap between the design gates
+
+Measured on synthetic functions and on this repo.
+
+| Shape | Ruff `C901` | Other Ruff rule | `complexipy` |
+|---|---|---|---|
+| Flat chain of ten `elif` branches | 11 | `PLR0911` (11 returns) | 10 |
+| Eight levels of nested loops and ifs | 9 | `PLR1702` (8 blocks) | 37 |
+| Seven parameters | clean | `PLR0913` (7 arguments) | 0 |
+
+- `complexipy` and `C901` agree on flat code. They diverge on nesting, where
+  `complexipy` scores four times higher. Keep `C901` for fast editor feedback
+  and let `complexipy` carry the nesting limit.
+- `PLR1702` (nesting depth) and `PLR0914` (locals) are preview rules and
+  duplicate what `complexipy` penalises. They are not adopted.
+- `PLR0913` does not overlap with either tool.
+- `import-linter` checks which modules import which. `SLF001` checks attribute
+  access. Neither covers the other.
+- The function length hook and `PLR0915` (statements) overlap. `PLR0915` stays
+  in the template because it is cheap.
 
 ## Optional
 
@@ -44,6 +68,15 @@ whenever it implements a rule exactly.
   members, locals, expression counts, try body). Adopting it wholesale would
   flood the repos and overlap Ruff; cherry-picking through flake8 is more
   machinery than the current hooks justify.
+- `tach` — layers and explicit public interfaces per module, written in Rust.
+  It overlaps `import-linter` on layers. Choose one; `import-linter` is the
+  more mature and has independence and forbidden-import contracts.
+- `vulture` — dead code. Its unique value (unused functions and fields) only
+  appears at 60% confidence, where it flagged dataclass fields in this repo
+  and would need a whitelist. Ruff `F401` and `F841` cover the high-confidence
+  cases. Revisit if dead helpers become a problem.
+- Ruff `PLR2004` (magic numbers) — four hits in this repo, mostly line counts
+  and arities. The readability gain does not justify the noise.
 - Full pylint — overlaps Ruff. Only `duplicate-code` (R0801) and
   `too-many-lines` (C0302) are unique; `prylint` or `lizard` can cover both.
 

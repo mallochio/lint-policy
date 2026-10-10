@@ -1,0 +1,19 @@
+[tool.importlinter]
+root_package = "myapp"
+
+[[tool.importlinter.contracts]]
+name = "Layers only import downward"
+type = "layers"
+layers = [
+    "myapp.api",
+    "myapp.services",
+    "myapp.domain",
+]
+
+[[tool.importlinter.contracts]]
+name = "Feature packages stay independent"
+type = "independence"
+modules = [
+    "myapp.billing",
+    "myapp.search",
+]

@@ -183,17 +183,19 @@ def pattern_binds_subject(node: ast.AST, subject_key: str) -> bool:
     return isinstance(node, ast.MatchMapping) and node.rest is not None and subject_has_name(subject_key, node.rest)
 
 
+def _imported_names(node: ast.Import | ast.ImportFrom) -> list[str]:
+    """Return the names an import statement binds."""
+    if isinstance(node, ast.Import):
+        return [alias.asname or alias.name.split(".")[0] for alias in node.names]
+    return [alias.asname or alias.name for alias in node.names]
+
+
 def import_binds_subject(node: ast.AST, subject_key: str) -> bool:
     """Check whether an import binds a name in the subject."""
-    if isinstance(node, ast.Import):
-        names = (alias.asname or alias.name.split(".")[0] for alias in node.names)
-        return any(subject_has_name(subject_key, name) for name in names)
-    if isinstance(node, ast.ImportFrom):
-        if any(alias.name == "*" for alias in node.names):
-            return True
-        names = (alias.asname or alias.name for alias in node.names)
-        return any(subject_has_name(subject_key, name) for name in names)
-    return False
+    if not isinstance(node, (ast.Import, ast.ImportFrom)):
+        return False
+    wildcard = isinstance(node, ast.ImportFrom) and any(alias.name == "*" for alias in node.names)
+    return wildcard or any(subject_has_name(subject_key, name) for name in _imported_names(node))
 
 
 def write_targets(node: ast.AST) -> list[ast.expr]:

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "lint-policy"
-version = "0.4.2"
+version = "0.4.3"
 description = "Shared pre-commit policy hooks for agentic Python repositories."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -23,6 +23,8 @@ lintpolicy-baseline = "lintpolicy.make_baseline:main"
 
 [dependency-groups]
 dev = [
+    "complexipy>=8.0.1",
+    "import-linter>=2.15",
     "pre-commit>=4.0",
     "pytest>=8.3",
     "ruff>=0.8",
@@ -36,16 +38,35 @@ line-length = 120
 target-version = "py312"
 
 [tool.ruff.lint]
-select = ["E", "F", "C901", "D", "ERA"]
+select = ["E", "F", "C901", "D", "ERA", "PLR0913", "SLF001"]
 ignore = ["D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107", "E501"]
 [tool.ruff.lint.pydocstyle]
 convention = "google"
+
+[tool.ruff.lint.pylint]
+max-args = 5
 
 [tool.ruff.lint.mccabe]
 max-complexity = 12
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["D"]
+"tests/**" = ["D", "SLF001"]
+
+[tool.complexipy]
+paths = ["src"]
+max-complexity-allowed = 15
+
+[tool.importlinter]
+root_package = "lintpolicy"
+
+[[tool.importlinter.contracts]]
+name = "Entry points sit above checks, checks sit above shared modules"
+type = "layers"
+layers = [
+    "lintpolicy.make_baseline",
+    "lintpolicy.check_comments | lintpolicy.check_docstrings | lintpolicy.check_limits | lintpolicy.check_reinvention | lintpolicy.check_suppressions | lintpolicy.check_toplevel | lintpolicy.numeric",
+    "lintpolicy.baseline | lintpolicy.config | lintpolicy.directives | lintpolicy.discovery | lintpolicy.reinvention_rules | lintpolicy.reporting | lintpolicy.structure",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

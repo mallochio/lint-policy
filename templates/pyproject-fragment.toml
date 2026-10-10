@@ -24,24 +24,29 @@ select = [
     "PIE",
     "PLR0911",
     "PLR0912",
+    "PLR0913",
     "PLR0915",
+    "SLF001",
     "RUF",
     "PGH",
 ]
-ignore = ["E501", "PLR0913", "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107"]
+ignore = ["E501", "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
+
+[tool.ruff.lint.pylint]
+max-args = 5
 
 [tool.ruff.lint.mccabe]
 max-complexity = 12
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["ARG001", "D"]
+"tests/**" = ["ARG001", "D", "SLF001"]
 
 [tool.complexipy]
 paths = ["src"]
-max-complexity-allowed = 20
+max-complexity-allowed = 15
 sort = "desc"
 exclude = ["tests/**"]
 

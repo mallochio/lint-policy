@@ -12,6 +12,9 @@ Paste this block into a target repository's `AGENTS.md`.
   Docstrings follow Google style. Tests are exempt from docstrings.
 - Files stay below 300 lines. Functions stay below 30 lines excluding their
   docstrings. Decorators do not count.
+- Keep cognitive complexity per function at 15 or less and functions to five
+  parameters or fewer. Respect the `import-linter` layers: import downward
+  only, and do not access private members of other modules.
 - Imports and module-level assignments belong at the top of the file. No
   imports inside functions or classes. A module-level assignment after the
   first class or function definition fails.
