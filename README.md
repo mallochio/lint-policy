@@ -26,7 +26,7 @@ only the changed files, because the baseline checks are global.
 
    ```yaml
      - repo: https://github.com/mallochio/lint-policy
-       rev: v0.2.0
+       rev: v0.4.2
        hooks:
          - id: no-comments
          - id: require-docstrings
