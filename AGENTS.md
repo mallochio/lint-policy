@@ -24,5 +24,6 @@ Follow the policy here before you change any hook.
 - Do not add suppression directives. Fix the code or the check instead.
 - Keep test functions small and test files short. Tests are exempt from
   docstrings, not from the comment ban or the line limits.
-- When a hook reports a stale baseline entry, remove the entry and rerun
-  `just baseline` rather than weakening the check.
+- Explanatory comments are never baselined. When a hook reports a stale
+  baseline entry, remove the entry and rerun `just baseline` rather than
+  weakening the check.

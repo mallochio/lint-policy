@@ -34,10 +34,11 @@ uvx --from git+https://github.com/mallochio/lint-policy lintpolicy-baseline --wr
 uv run pre-commit run --all-files
 ```
 
-The first run should pass, because every current violation is in the
-baseline. Commit the baseline together with the hook block. The baseline diff
-is the review artifact: reviewers can see exactly what debt is being
-grandfathered.
+The first run should pass for debt the baseline records. Explanatory comments
+are not recorded, so delete them, and delete any `comments` section already
+in the baseline, before expecting `no-comments` to pass. Commit the baseline
+together with the hook block. The baseline diff is the review artifact:
+reviewers can see exactly what debt is being grandfathered.
 
 ## 4. Fix in waves
 
