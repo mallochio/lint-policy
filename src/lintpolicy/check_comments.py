@@ -3,7 +3,7 @@
 Docstrings are not comments. Allowed hash comments are a shebang on line 1,
 a PEP 263 encoding cookie, and tooling directives listed in the configuration.
 A comment that carries prose followed by a directive is reported so the prose
-can be deleted.
+can be deleted. Findings are never baselined.
 """
 
 from __future__ import annotations
@@ -14,7 +14,7 @@ from collections.abc import Sequence
 from io import BytesIO
 from pathlib import Path
 
-from lintpolicy.baseline import Baseline, over_budget_keys, verify_counts
+from lintpolicy.baseline import Baseline
 from lintpolicy.config import Config, load_config
 from lintpolicy.directives import extract_directive, starts_with_directive
 from lintpolicy.discovery import iter_python_files, relative_path
@@ -117,8 +117,14 @@ def main() -> int:
     """Run the comment policy on the configured roots."""
     config = load_config()
     result = scan(config)
-    budgets = Baseline.load(config.baseline_path).section("comments")
-    over, stale = verify_counts("comments", result.counts, budgets)
-    unbudgeted = over_budget_keys(result.counts, budgets)
-    findings = [finding for finding in result.findings if finding.path in unbudgeted]
-    return report("comments", findings, [*over, *stale])
+    errors = _baseline_comment_errors(config.baseline_path)
+    return report("comments", result.findings, errors)
+
+
+def _baseline_comment_errors(path: Path) -> list[str]:
+    """Return an error when the baseline still stores comment counts."""
+    comments = Baseline.load(path).data.get("comments")
+    if not comments:
+        return []
+    message = f"comments: remove the comments section from {path.name}; explanatory comments are never baselined"
+    return [message]

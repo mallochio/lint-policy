@@ -8,7 +8,6 @@ import sys
 from collections.abc import Sequence
 
 from lintpolicy import (
-    check_comments,
     check_docstrings,
     check_limits,
     check_reinvention,
@@ -21,10 +20,13 @@ from lintpolicy.numeric import scan as scan_numeric
 
 
 def collect(config: Config) -> dict:
-    """Measure the current tree and return baseline data."""
+    """Measure the current tree and return baseline data.
+
+    Comment counts are omitted. Explanatory comments fail on their own and
+    are never grandfathered.
+    """
     return {
         "version": BASELINE_VERSION,
-        "comments": check_comments.scan(config).counts,
         "docstrings": check_docstrings.scan(config).counts,
         "limits": check_limits.scan(config).counts,
         "numeric": scan_numeric(config).counts,

@@ -25,7 +25,8 @@ Paste this block into a target repository's `AGENTS.md`.
 - No new `# noqa`, `# type: ignore`, `# pyright: ignore`, or `# nosec`
   directives. A directive needs ` - reason: <why>` and a baseline entry that a
   reviewer can see in the diff.
-- Fix the code, not the check. Baseline entries can only shrink. When
-  `lintpolicy` reports a stale entry, remove the entry and run
+- Fix the code, not the check. Baseline entries can only shrink. Explanatory
+  comments are never baselined. When `lintpolicy` reports a stale entry,
+  remove the entry and run
   `uvx --from git+https://github.com/mallochio/lint-policy lintpolicy-baseline --write`.
 - Run `just checks-ci` before pushing, and report any check that cannot run.

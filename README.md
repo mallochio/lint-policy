@@ -26,7 +26,7 @@ only the changed files, because the baseline checks are global.
 
    ```yaml
      - repo: https://github.com/mallochio/lint-policy
-       rev: v0.4.3
+       rev: v0.4.4
        hooks:
          - id: no-comments
          - id: require-docstrings
@@ -90,7 +90,9 @@ in `templates/lintpolicy.toml`.
 ## Baseline ratchet
 
 The baseline records existing debt, so new violations fail immediately while
-old ones do not block unrelated work.
+old ones do not block unrelated work. Explanatory comments are never
+recorded: every prose `#` comment fails, and a non-empty `comments` section
+in the baseline fails until it is removed.
 
 - A violation that is not in the baseline fails.
 - A violation that grows past its baseline value fails.
